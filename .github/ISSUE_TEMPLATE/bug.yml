@@ -1,0 +1,32 @@
+name: Reproduction or CLI problem
+description: Report a command failure, numerical mismatch, or unclear reproduction step.
+title: "[Reproduction] "
+body:
+  - type: input
+    id: environment
+    attributes:
+      label: Python version, OS, and repository version
+      placeholder: "Python 3.12, Windows 11, main at commit ..."
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Minimal command or Python snippet
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result and why
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual output
+      description: Include the error or mismatched values; remove private paths or credentials.
+      render: text
+    validations:
+      required: true

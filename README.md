@@ -4,18 +4,17 @@
 
 [中文说明](README.zh-CN.md)
 
-**Small, exact experiments for checking how credit scores become policy updates.**
+**Check the update direction of an RL credit signal in an exact CPU experiment.**
 
-Runs on a CPU with Python 3.10+ and the standard library. No installation,
-model weights, GPU, API key, network request, or external dataset is needed.
+For RL researchers and students who want to inspect how scores, normalization,
+and smoothing affect a policy update. This small two-step environment has a
+known reward gradient, so you can compare a proxy against an exact answer.
+Python 3.10+ and the standard library are enough; no GPU or model is required.
 
-This first release contains a two-step diagnostic inspired by the published
-normalization and smoothing operations in [HCAPO](https://arxiv.org/html/2603.08754v1),
-plus a demonstration of why different scores can produce the same aggregate
-update coefficient. It is an independent, idealized implementation. It does
-not reproduce the authors' code, prompts, environments, or training results.
+[Walkthrough & Python API](docs/walkthrough.md) · [All results](results/summary.md) ·
+[Derivation](docs/research_note.md) · [Contributing](CONTRIBUTING.md)
 
-## Run it
+## Try it
 
 Clone the repository (or download and extract its source ZIP), then run:
 
@@ -25,31 +24,42 @@ cd credit-assignment-sanity-checks
 python -m credit_sanity demo
 ```
 
-Explore the controls and check every result:
+Expected output includes these lines (the full output lists all five signals):
 
-```bash
-python -m credit_sanity demo --q0 1 --q1 1 --p 0.9
-python -m credit_sanity demo --echo
-python -m credit_sanity coefficient-demo
-python -m unittest discover -s tests -v
-python -m credit_sanity verify
-python -m credit_sanity report
+```text
+True dJ/dtheta: +0.000900000000
+trajectory_smooth                       -0.180982441841          -1.628959897393e-07
 ```
 
-Rebuild the committed result file:
+The columns on the second line are the proxy gradient and the terminal-reward
+change after a logit step of size `.001`. In this example, the proxy moves
+against the reward gradient. The checks below show why this does not imply a
+general failure of a credit method.
 
-```bash
-python -m credit_sanity sweep --output results/theory.json
-python -m credit_sanity report --output results/summary.md
-```
+Python calls work in PowerShell, cmd, and POSIX shells. On Windows, use `py -3`
+if your installation uses the Python launcher. Run from the repository root;
+no `pip install` step is needed. The [source ZIP](https://github.com/Cookie-27/credit-assignment-sanity-checks/releases)
+also works after extraction.
 
-Python calls work in PowerShell, cmd, and POSIX shells when `python` resolves
-to a supported interpreter. If your Windows installation uses the Python
-launcher, replace `python` with `py -3`. Local validation used Python 3.12 on
-Windows. The CI badge links to the current Ubuntu/Windows, Python 3.10/3.12
-matrix results.
+## Choose a check
 
-For a quick read without running code, see the [generated result summary](results/summary.md).
+| Question | Command | What to inspect |
+|---|---|---|
+| Can a proxy point against the reward gradient? | `python -m credit_sanity demo` | True gradient versus each proxy |
+| Is policy drift harmful when action values tie? | `python -m credit_sanity demo --q0 1 --q1 1` | Nonzero proxy, zero reward change |
+| Does complete action echo change the result? | `python -m credit_sanity demo --echo` | The smoothed proxy becomes positive |
+| Does a winner swap change an identical decision's total weight? | `python -m credit_sanity coefficient-demo` | Equal aggregate coefficients |
+
+The [walkthrough](docs/walkthrough.md) explains each check and shows how to
+change `q0`, `q1`, `p`, group size, and smoothing through Python or the CLI.
+Its Python examples execute in CI.
+
+## Demo
+
+![Four runnable credit-assignment checks, rendered from captured CLI output](docs/assets/demo.gif)
+
+This animation displays actual captured command output; it is a rendered
+transcript, not a screen recording. [Accessible text and reproduction commands](docs/demo.md).
 
 ## What the first example shows
 
@@ -106,10 +116,30 @@ worse long-run learning, natural LLM failure rates, or a new RL algorithm.
 - [Reproducibility](REPRODUCIBILITY.md): commands and numerical tolerances.
 - [References](REFERENCES.md): primary sources and what was implemented.
 
+Recompute and verify the entire grid:
+
+```bash
+python -m credit_sanity report
+python -m credit_sanity verify
+python -m unittest discover -s tests -v
+python -m doctest docs/walkthrough.md
+```
+
+For artifact regeneration, see [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
+
 The package returns `null` for the inverse-ratio HCA control when an action
 cannot reach a positive-reward outcome that another action can reach. Its
 support assumptions are explicit; the independent marginal-outcome control
 remains available. See the research note for the distinction.
+
+## Source and scope
+
+The normalization and smoothing operations are inspired by
+[HCAPO](https://arxiv.org/html/2603.08754v1). This is an independent, idealized
+implementation with exact posterior probabilities. It does not reproduce the
+authors' code, prompts, environments, or training results. The finite checks
+are suitable for inspecting mechanisms and teaching, with no paper-novelty
+or general LLM-performance claim.
 
 ## Contributing
 
@@ -117,6 +147,7 @@ A useful addition contains a small executable case, its assumptions, a
 comparison against a simpler baseline, and an outcome that could falsify the
 proposed explanation. See [CONTRIBUTING.md](CONTRIBUTING.md) for the experiment
 checklist and validation commands.
+The [roadmap](ROADMAP.md) lists small contributions and research extensions.
 
 ## License
 

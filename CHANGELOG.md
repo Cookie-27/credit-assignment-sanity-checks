@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+- Focused quick start with expected output and a guide to choosing a control.
+- Four-case GIF demo rendered from captured CLI output, with an accessible
+  transcript and an optional authoring script.
+- Executable Python walkthrough covering gradients, tied-value drift, outcome
+  representations, identical decisions, and HCA support boundaries.
+- Explained CLI parameters, ranges, and defaults in `demo --help`.
+- Scientific/reproduction issue forms, a pull request template, and a scoped roadmap.
+- CI now executes the walkthrough's Python examples.
+
 ## 0.1.0
 
 - Exact, CPU-only two-step credit-assignment diagnostics.

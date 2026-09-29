@@ -26,3 +26,4 @@ jobs:
       - run: python -m credit_sanity verify
       - run: python -m credit_sanity coefficient-demo
       - run: python -m credit_sanity demo --json
+      - run: python -m doctest docs/walkthrough.md

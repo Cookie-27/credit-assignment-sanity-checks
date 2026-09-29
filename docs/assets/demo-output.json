@@ -1,0 +1,26 @@
+[
+  {
+    "title": "A proxy can reverse the update direction",
+    "command": "python -m credit_sanity demo",
+    "output": "Expected reward: 0.999000000\nTrue dJ/dtheta: +0.000900000000\nmethod                                expected gradient    reward change (step=.001)\ngrpo                                    +0.002377806524          +2.140023835917e-09\ntrajectory_raw                          +0.025626506224          +2.306361918336e-08\ntrajectory_smooth                       -0.180982441841          -1.628959897393e-07\ntrajectory_raw_unprotected              +0.211413513010          +1.902560719191e-07\ntrajectory_smooth_unprotected           -0.201619132391          -1.814718538162e-07\nToy first-update diagnostic; not an LLM training result.\n",
+    "note": "The true gradient is positive; the smoothed proxy is negative in this case."
+  },
+  {
+    "title": "Equal-value drift need not reduce reward",
+    "command": "python -m credit_sanity demo --q0 1 --q1 1",
+    "output": "Expected reward: 1.000000000\nTrue dJ/dtheta: +0.000000000000\nmethod                                expected gradient    reward change (step=.001)\ngrpo                                    +0.000000000000          -0.000000000000e+00\ntrajectory_raw                          +0.020949198305          +0.000000000000e+00\ntrajectory_smooth                       -0.188541731061          -0.000000000000e+00\ntrajectory_raw_unprotected              +0.209491983047          +0.000000000000e+00\ntrajectory_smooth_unprotected           -0.209490812290          -0.000000000000e+00\nToy first-update diagnostic; not an LLM training result.\n",
+    "note": "Both actions always succeed. Every displayed reward change is zero."
+  },
+  {
+    "title": "Complete action echo changes the result",
+    "command": "python -m credit_sanity demo --echo",
+    "output": "Expected reward: 0.999000000\nTrue dJ/dtheta: +0.000900000000\nmethod                                expected gradient    reward change (step=.001)\ngrpo                                    +0.002377806524          +2.140023835917e-09\ntrajectory_raw                          +0.004755613045          +4.280043599536e-09\ntrajectory_smooth                       +0.004755613047          +4.280043600646e-09\ntrajectory_raw_unprotected              +0.004755613045          +4.280043599536e-09\ntrajectory_smooth_unprotected           +0.004755613047          +4.280043600646e-09\nToy first-update diagnostic; not an LLM training result.\n",
+    "note": "Revealing the action makes the smoothed proxy positive in this case."
+  },
+  {
+    "title": "A ranking swap can preserve the total coefficient",
+    "command": "python -m credit_sanity coefficient-demo",
+    "output": "{\n  \"before\": [\n    0.0,\n    0.9999990000010001\n  ],\n  \"after\": [\n    0.9999990000010001,\n    0.0\n  ],\n  \"sum_before\": 0.9999990000010001,\n  \"sum_after\": 0.9999990000010001,\n  \"assumption\": \"The two samples have identical policy inputs and target tokens.\",\n  \"scope\": \"Coefficient identity only; this does not equate distinct neural-network gradients.\"\n}\n",
+    "note": "This identity requires identical policy inputs and target tokens."
+  }
+]

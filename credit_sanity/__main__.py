@@ -39,12 +39,22 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="Exact, CPU-only credit-assignment sanity checks.")
     parser.add_argument("--version", action="version", version=__version__)
     commands = parser.add_subparsers(dest="command", required=True)
-    demo = commands.add_parser("demo", help="Evaluate one finite experiment.")
-    for name in ("q0", "q1", "p", "gamma", "alpha", "temperature", "epsilon"):
-        demo.add_argument("--" + name, type=float, default=getattr(Config(), name))
-    demo.add_argument("--group", type=int, default=8)
-    demo.add_argument("--echo", action="store_true")
-    demo.add_argument("--json", action="store_true")
+    demo = commands.add_parser("demo", help="Evaluate one finite experiment.",
+                               formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    descriptions = {
+        "q0": "Success probability of action 0, in [0, 1].",
+        "q1": "Success probability of action 1, in [0, 1].",
+        "p": "Policy probability of action 0, strictly between 0 and 1.",
+        "gamma": "Root-credit discount, in [0, 1].",
+        "alpha": "Root weight in the adjacent smoothing blend, in [0, 1].",
+        "temperature": "Positive temperature for posterior ** (1 / temperature).",
+        "epsilon": "Positive constant added to each normalization standard deviation.",
+    }
+    for name, help_text in descriptions.items():
+        demo.add_argument("--" + name, type=float, default=getattr(Config(), name), help=help_text)
+    demo.add_argument("--group", type=int, default=8, help="Number of independent rollouts, from 1 through 32.")
+    demo.add_argument("--echo", action="store_true", help="Reveal the action in the outcome, making its posterior 1.")
+    demo.add_argument("--json", action="store_true", help="Print all values, outcome tables, and HCA support flags.")
     full = commands.add_parser("sweep", help="Recompute all 240 fixed theory conditions.")
     full.add_argument("--output", type=Path, default=Path("results/theory.json"))
     verify = commands.add_parser("verify", help="Recompute and compare every committed result.")

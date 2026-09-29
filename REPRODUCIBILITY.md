@@ -2,9 +2,13 @@
 
 ## Requirements
 
-Python 3.10 or newer. Only the standard library is imported. The locally
+Python 3.10 or newer. The CLI, experiment, tests, and walkthrough use only
+the standard library. The locally
 verified environment is Windows with Python 3.12.14. Running from the root
 of the extracted repository requires no package installation.
+
+The optional GIF-authoring script uses Pillow only when invoked with `--gif`;
+Pillow is not needed for any experiment or verification command.
 
 ## Commands
 
@@ -14,6 +18,7 @@ python -m credit_sanity verify --reference results/theory.json
 python -m credit_sanity demo --json
 python -m credit_sanity coefficient-demo
 python -m credit_sanity report
+python -m doctest docs/walkthrough.md
 ```
 
 To regenerate rather than check the artifact:

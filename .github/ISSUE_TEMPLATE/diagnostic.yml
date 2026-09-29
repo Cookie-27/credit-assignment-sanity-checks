@@ -1,0 +1,30 @@
+name: Scientific correction or diagnostic proposal
+description: Propose a finite case, correct an assumption, or add a falsifying control.
+title: "[Diagnostic] "
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question and hypothesis
+      description: What behavior would support or refute the explanation?
+    validations:
+      required: true
+  - type: textarea
+    id: setting
+    attributes:
+      label: Environment, objective, estimator, and assumptions
+      description: Include the decision units, outcome representation, and probability support.
+    validations:
+      required: true
+  - type: textarea
+    id: control
+    attributes:
+      label: Simple baseline and falsifying control
+      description: Distinguish scores, aggregate coefficients, gradients, and measured rewards.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Reproducer or primary reference
+      description: Provide full configuration and commands if available; identify untested predictions.

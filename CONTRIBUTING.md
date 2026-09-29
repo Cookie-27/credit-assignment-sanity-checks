@@ -4,6 +4,11 @@ Small, checkable experiments and corrections are welcome. Start with an issue
 or a pull request that states the question, the assumptions, and a command
 someone else can run on a CPU.
 
+Start with the [walkthrough](docs/walkthrough.md). Small, scoped contribution
+ideas are listed in the [roadmap](ROADMAP.md). Use the issue templates for a
+reproduction problem or a scientific correction; a clear counterexample is
+a useful contribution even when it rules out a proposed method.
+
 ## Adding an experiment
 
 1. Define the environment, objective, estimator, and evaluation quantity.
@@ -26,6 +31,7 @@ From the repository root:
 ```bash
 python -m unittest discover -s tests -v
 python -m credit_sanity verify
+python -m doctest docs/walkthrough.md
 ```
 
 When deliberately changing the experiment, regenerate both artifacts and
